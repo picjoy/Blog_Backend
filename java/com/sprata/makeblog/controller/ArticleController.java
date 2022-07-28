@@ -15,6 +15,7 @@ import java.util.List;
 // final이 필요하면 반드시 사용할 때  => @RequiredArgsConstructor 활용
 @RequiredArgsConstructor
 public class ArticleController {
+    
     //CRUD
 
     private final ArticleRepository articleRepository;
@@ -41,7 +42,7 @@ public class ArticleController {
         );
         return article;
     }
-
+    
     // 게시물 비밀번호 확인 => Post
     @PostMapping("/api/articles/{id}")
     public String checkPassword(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
@@ -49,6 +50,9 @@ public class ArticleController {
                 () -> new NullPointerException("해당 아이디가 존재하지 않습니다.")
         );
         return requestDto.getPassword();
+    public boolean checkPassword(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
+        Article article = articleService.findArticle(id);
+        return article.getPassword().equals(requestDto.getPassword());
     }
 
     // 게시물 수정 => Put
@@ -56,15 +60,26 @@ public class ArticleController {
     public Long updateArticle(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto){
         articleService.update(id, requestDto);
         return id;
+    public String updateArticle(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto){
+        Article article = articleService.findArticle(id);
+        if (article.getPassword().equals(requestDto.getPassword())){
+            articleService.update(id, requestDto);
+            return "수정 완료!";
+        }
+        else {
+            return "비밀번호가 다릅니다. 수정할 수 없습니다.";
+        }
+
+
     }
 
     // 게시물 삭제 => Delete
     @DeleteMapping("/api/articles/{id}")
     public void deleteArticle(@PathVariable Long id){
+    public String deleteArticle(@PathVariable Long id){
         articleRepository.deleteById(id);
+        return "삭제 완료!";
     }
-
-
 
 
 
