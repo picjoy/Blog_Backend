@@ -29,5 +29,11 @@ public class ArticleService {
         //업데이트가 해주기
         article.update(requestDto);
     }
+    
+    public Article findArticle(Long id){
+        return articleRepository.findById(id).orElseThrow(
+                ()-> new NullPointerException("게시물을 찾을 수 없습니다")
+        );
+    }
 
 }
