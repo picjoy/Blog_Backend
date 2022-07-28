@@ -45,11 +45,6 @@ public class ArticleController {
     
     // 게시물 비밀번호 확인 => Post
     @PostMapping("/api/articles/{id}")
-    public String checkPassword(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
-        Article article = articleRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("해당 아이디가 존재하지 않습니다.")
-        );
-        return requestDto.getPassword();
     public boolean checkPassword(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
         Article article = articleService.findArticle(id);
         return article.getPassword().equals(requestDto.getPassword());
@@ -57,9 +52,6 @@ public class ArticleController {
 
     // 게시물 수정 => Put
     @PutMapping("/api/articles/{id}")
-    public Long updateArticle(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto){
-        articleService.update(id, requestDto);
-        return id;
     public String updateArticle(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto){
         Article article = articleService.findArticle(id);
         if (article.getPassword().equals(requestDto.getPassword())){
@@ -75,7 +67,6 @@ public class ArticleController {
 
     // 게시물 삭제 => Delete
     @DeleteMapping("/api/articles/{id}")
-    public void deleteArticle(@PathVariable Long id){
     public String deleteArticle(@PathVariable Long id){
         articleRepository.deleteById(id);
         return "삭제 완료!";
